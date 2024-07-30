@@ -24,13 +24,6 @@
     <div id="reader"></div>
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <script>
-        document.getElementById('scanButton').addEventListener('click', function() {
-            document.getElementById('reader').style.display = 'block'; // Показати елемент
-            const html5QrcodeScanner = new Html5QrcodeScanner(
-                "reader", { fps: 10, qrbox: 250 });
-            html5QrcodeScanner.render(onScanSuccess);
-        });
-
         function onScanSuccess(decodedText) {
             const location = document.getElementById('location').value;
             fetch('https://hook.eu2.make.com/criogtxzq3mhy2o89gymvgd1dqg5jshk', {
@@ -44,6 +37,15 @@
             .then(data => console.log('Success:', data))
             .catch((error) => console.error('Error:', error));
         }
+
+        document.getElementById('scanButton').addEventListener('click', function() {
+            document.getElementById('reader').style.display = 'block'; // Показати елемент
+            const html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start({ facingMode: "environment" }, {
+                fps: 10, // frame per second
+                qrbox: 250 // display box size
+            }, onScanSuccess);
+        });
     </script>
 </body>
 </html>
