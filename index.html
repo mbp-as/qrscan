@@ -5,15 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Scanner</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        select, button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+        }
         #reader {
-            width: 300px;
-            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            margin: 20px auto;
             display: none; /* Спочатку приховано */
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
         }
         #result {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
+            color: #28a745; /* Колір зеленого успіху */
         }
     </style>
 </head>
@@ -25,16 +42,38 @@
         <option value="3">Локація 3</option>
         <option value="4">Локація 4</option>
     </select>
+    <br>
     <button id="scanButton">Сканувати</button>
     <button id="stopButton" style="display: none;">Зупини скан</button>
+    <div id="result">Результат сканування з'явиться тут</div>
     <div id="reader"></div>
-    <div id="result"></div>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
         let html5QrCode;
 
+        function stopScanner() {
+            if (html5QrCode) {
+                html5QrCode.stop()
+                .then(() => {
+                    console.log("Сканування зупинено.");
+                    document.getElementById('reader').style.display = 'none';
+                    document.getElementById('scanButton').style.display = 'inline';
+                    document.getElementById('stopButton').style.display = 'none';
+                })
+                .catch(err => {
+                    console.error("Помилка при зупинці сканера", err);
+                });
+            } else {
+                console.log("html5QrCode не визначено.");
+            }
+        }
+
         function onScanSuccess(decodedText) {
             const location = document.getElementById('location').value;
+            console.log(`Скановано ${decodedText}`);
+            
+            document.getElementById('result').textContent = `Команда: ${decodedText} відмічена!`;
+
             fetch('https://hook.eu2.make.com/criogtxzq3mhy2o89gymvgd1dqg5jshk', {
                 method: 'POST',
                 headers: {
@@ -45,24 +84,16 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Відображення результату сканування
-                document.getElementById('result').textContent = `Сканована команда: ${decodedText}. Успішно.`;
-                
-                // Зупинка сканування
-                html5QrCode.stop()
-                .then(() => {
-                    document.getElementById('reader').style.display = 'none';
-                    document.getElementById('scanButton').style.display = 'inline';
-                    document.getElementById('stopButton').style.display = 'none';
-                })
-                .catch(err => {
-                    console.error("Помилка при зупинці сканера", err);
-                });
+                // Не потрібно оновлювати результат тут, це вже зроблено вище
             })
             .catch((error) => console.error('Error:', error));
+
+            // Зупинка сканера після успішного сканування
+            stopScanner();
         }
 
         document.getElementById('scanButton').addEventListener('click', function() {
+            document.getElementById('result').textContent = 'Результат сканування з\'явиться тут'; // Очищення результату
             document.getElementById('reader').style.display = 'block'; // Показати елемент
             document.getElementById('scanButton').style.display = 'none';
             document.getElementById('stopButton').style.display = 'inline';
@@ -80,17 +111,7 @@
             });
         });
 
-        document.getElementById('stopButton').addEventListener('click', function() {
-            html5QrCode.stop()
-            .then(() => {
-                document.getElementById('reader').style.display = 'none';
-                document.getElementById('scanButton').style.display = 'inline';
-                document.getElementById('stopButton').style.display = 'none';
-            })
-            .catch(err => {
-                console.error("Помилка при зупинці сканера", err);
-            });
-        });
+        document.getElementById('stopButton').addEventListener('click', stopScanner);
     </script>
 </body>
 </html>
