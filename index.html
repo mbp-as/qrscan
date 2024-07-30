@@ -43,11 +43,23 @@
                 body: JSON.stringify({ team: decodedText, location: location }),
             })
             .then(response => response.json())
-            .then(data => console.log('Success:', data))
+            .then(data => {
+                console.log('Success:', data);
+                // Відображення результату сканування
+                document.getElementById('result').textContent = `Сканована команда: ${decodedText}. Успішно.`;
+                
+                // Зупинка сканування
+                html5QrCode.stop()
+                .then(() => {
+                    document.getElementById('reader').style.display = 'none';
+                    document.getElementById('scanButton').style.display = 'inline';
+                    document.getElementById('stopButton').style.display = 'none';
+                })
+                .catch(err => {
+                    console.error("Помилка при зупинці сканера", err);
+                });
+            })
             .catch((error) => console.error('Error:', error));
-            
-            // Відображення результату сканування
-            document.getElementById('result').textContent = `Сканована команда: ${decodedText}`;
         }
 
         document.getElementById('scanButton').addEventListener('click', function() {
