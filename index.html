@@ -132,8 +132,8 @@ select, button {
             html5QrCode.start(
                 { facingMode: "environment" }, // Камера заднього виду
                 {
-                    fps: 10, // Кількість кадрів за секунду
-                    qrbox: 250 // Розмір області для сканування QR-коду
+                    fps: 20, // Кількість кадрів за секунду
+                    qrbox: 550 // Розмір області для сканування QR-коду
                 },
                 onScanSuccess)
             .catch(err => {
