@@ -13,53 +13,55 @@
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f4f4f4;
-            margin: 0;
-            height: 100vh;
-            overflow: hidden; /* Переключити прокрутку, якщо потрібно */
-        }
-        .container {
-            background-color: #28a745; /* Зелений фон контейнера */
-            border-radius: 20px 20px 0 0; /* Заокруглені верхні кути */
-            padding: 20px;
-            width: calc(100% - 40px); /* Ширина контейнера з урахуванням відступів */
-            max-width: 600px;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-            z-index: 1000; /* Для того, щоб контейнер був зверху всіх елементів */
-        }
-        select, button {
-            font-size: 18px;
-            padding: 10px 20px;
-            margin: 10px 0; /* Відступи зліва та справа */
-            background-color: #fff; /* Білий фон для селектора і кнопок */
-            border: none;
-            border-radius: 8px; /* Заокруглення селектора і кнопок */
-            cursor: pointer;
-            width: calc(100% - 20px); /* Елементи майже в усю ширину */
-        }
-        #reader {
-            width: 100%;
-            max-width: 600px;
-            height: 400px;
-            margin: 20px auto;
-            display: none; /* Спочатку приховано */
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 22px;
-            font-weight: bold;
-            color: #fff; /* Білий текст результату на зеленому фоні */
-        }
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden; /* Переключити прокрутку, якщо потрібно */
+}
+.container {
+    background-color: #28a745; /* Зелений фон контейнера */
+    border-radius: 20px 20px 0 0; /* Заокруглені верхні кути */
+    padding: 20px;
+    width: calc(100% - 40px); /* Ширина контейнера з урахуванням відступів */
+    max-width: 600px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 1000; /* Для того, щоб контейнер був зверху всіх елементів */
+}
+select, button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 10px 0; /* Відступи зліва та справа */
+    background-color: #fff; /* Білий фон для селектора і кнопок */
+    border: none;
+    border-radius: 8px; /* Заокруглення селектора і кнопок */
+    cursor: pointer;
+    width: calc(100% - 20px); /* Елементи майже в усю ширину */
+    color: #000; /* Чорний текст для кнопок і селектора */
+}
+#reader {
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    margin: 20px auto;
+    display: none; /* Спочатку приховано */
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+#result {
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff; /* Білий текст результату на зеленому фоні */
+}
+
     </style>
 </head>
 <body>
