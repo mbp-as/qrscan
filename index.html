@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner</title>
+</head>
+<body>
+    <h1>Сканування QR-коду</h1>
+    <select id="location">
+        <option value="1">Локація 1</option>
+        <option value="2">Локація 2</option>
+        <option value="3">Локація 3</option>
+        <option value="4">Локація 4</option>
+    </select>
+    <div id="reader" style="width: 300px;"></div>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+        function onScanSuccess(decodedText) {
+            const location = document.getElementById('location').value;
+            fetch('https://hook.eu2.make.com/criogtxzq3mhy2o89gymvgd1dqg5jshk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ team: decodedText, location: location }),
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch((error) => console.error('Error:', error));
+        }
+
+        const html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+</body>
+</html>
