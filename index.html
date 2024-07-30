@@ -26,10 +26,13 @@
         <option value="4">Локація 4</option>
     </select>
     <button id="scanButton">Сканувати</button>
+    <button id="stopButton" style="display: none;">Зупини скан</button>
     <div id="reader"></div>
     <div id="result"></div>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
+        let html5QrCode;
+
         function onScanSuccess(decodedText) {
             const location = document.getElementById('location').value;
             fetch('https://hook.eu2.make.com/criogtxzq3mhy2o89gymvgd1dqg5jshk', {
@@ -49,7 +52,10 @@
 
         document.getElementById('scanButton').addEventListener('click', function() {
             document.getElementById('reader').style.display = 'block'; // Показати елемент
-            const html5QrCode = new Html5Qrcode("reader");
+            document.getElementById('scanButton').style.display = 'none';
+            document.getElementById('stopButton').style.display = 'inline';
+
+            html5QrCode = new Html5Qrcode("reader");
             html5QrCode.start(
                 { facingMode: "environment" }, // Камера заднього виду
                 {
@@ -59,6 +65,18 @@
                 onScanSuccess)
             .catch(err => {
                 console.error("Помилка при запуску сканера", err);
+            });
+        });
+
+        document.getElementById('stopButton').addEventListener('click', function() {
+            html5QrCode.stop()
+            .then(() => {
+                document.getElementById('reader').style.display = 'none';
+                document.getElementById('scanButton').style.display = 'inline';
+                document.getElementById('stopButton').style.display = 'none';
+            })
+            .catch(err => {
+                console.error("Помилка при зупинці сканера", err);
             });
         });
     </script>
