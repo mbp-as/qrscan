@@ -10,6 +10,11 @@
             margin-top: 20px;
             display: none; /* Спочатку приховано */
         }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -22,6 +27,7 @@
     </select>
     <button id="scanButton">Сканувати</button>
     <div id="reader"></div>
+    <div id="result"></div>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
         function onScanSuccess(decodedText) {
@@ -36,15 +42,24 @@
             .then(response => response.json())
             .then(data => console.log('Success:', data))
             .catch((error) => console.error('Error:', error));
+            
+            // Відображення результату сканування
+            document.getElementById('result').textContent = `Сканована команда: ${decodedText}`;
         }
 
         document.getElementById('scanButton').addEventListener('click', function() {
             document.getElementById('reader').style.display = 'block'; // Показати елемент
             const html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.start({ facingMode: "environment" }, {
-                fps: 10, // frame per second
-                qrbox: 250 // display box size
-            }, onScanSuccess);
+            html5QrCode.start(
+                { facingMode: "environment" }, // Камера заднього виду
+                {
+                    fps: 10, // Кількість кадрів за секунду
+                    qrbox: 250 // Розмір області для сканування QR-коду
+                },
+                onScanSuccess)
+            .catch(err => {
+                console.error("Помилка при запуску сканера", err);
+            });
         });
     </script>
 </body>
