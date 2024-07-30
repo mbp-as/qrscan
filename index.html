@@ -10,11 +10,32 @@
             text-align: center;
             padding: 20px;
             background-color: #f4f4f4;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; /* Переключити прокрутку, якщо потрібно */
+        }
+        .container {
+            background-color: #28a745; /* Зелений фон контейнера */
+            border-radius: 20px 20px 0 0; /* Заокруглені верхні кути */
+            padding: 20px;
+            width: calc(100% - 40px); /* Ширина контейнера з урахуванням відступів */
+            max-width: 600px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            z-index: 1000; /* Для того, щоб контейнер був зверху всіх елементів */
         }
         select, button {
             font-size: 18px;
             padding: 10px 20px;
-            margin: 10px;
+            margin: 10px 0; /* Відступи зліва та справа */
+            background-color: #fff; /* Білий фон для селектора і кнопок */
+            border: none;
+            border-radius: 8px; /* Заокруглення селектора і кнопок */
+            cursor: pointer;
+            width: calc(100% - 20px); /* Елементи майже в усю ширину */
         }
         #reader {
             width: 100%;
@@ -30,22 +51,23 @@
             margin-top: 20px;
             font-size: 22px;
             font-weight: bold;
-            color: #28a745; /* Колір зеленого успіху */
+            color: #fff; /* Білий текст результату на зеленому фоні */
         }
     </style>
 </head>
 <body>
-    <h1>Сканування QR-коду</h1>
-    <select id="location">
-        <option value="1">Локація 1</option>
-        <option value="2">Локація 2</option>
-        <option value="3">Локація 3</option>
-        <option value="4">Локація 4</option>
-    </select>
-    <br>
-    <button id="scanButton">Сканувати</button>
-    <button id="stopButton" style="display: none;">Зупини скан</button>
-    <div id="result">Результат сканування з'явиться тут</div>
+    <div class="container">
+        <div id="result">Результат сканування з'явиться тут</div>
+        <select id="location">
+            <option value="1">Локація 1</option>
+            <option value="2">Локація 2</option>
+            <option value="3">Локація 3</option>
+            <option value="4">Локація 4</option>
+        </select>
+        <br>
+        <button id="scanButton">Сканувати</button>
+        <button id="stopButton" style="display: none;">Зупини скан</button>
+    </div>
     <div id="reader"></div>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
@@ -72,7 +94,7 @@
             const location = document.getElementById('location').value;
             console.log(`Скановано ${decodedText}`);
             
-            document.getElementById('result').textContent = `Команда: ${decodedText} відмічена!`;
+            document.getElementById('result').textContent = `Команда ${decodedText} відмічена!`;
 
             fetch('https://hook.eu2.make.com/criogtxzq3mhy2o89gymvgd1dqg5jshk', {
                 method: 'POST',
@@ -93,7 +115,6 @@
         }
 
         document.getElementById('scanButton').addEventListener('click', function() {
-            document.getElementById('result').textContent = 'Результат сканування з\'явиться тут'; // Очищення результату
             document.getElementById('reader').style.display = 'block'; // Показати елемент
             document.getElementById('scanButton').style.display = 'none';
             document.getElementById('stopButton').style.display = 'inline';
