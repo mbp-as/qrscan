@@ -4,64 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Scanner</title>
-    <!-- Підключення манифесту -->
-    <link rel="manifest" href="/manifest.json">
-    <!-- Мета-теги для iOS -->
-    <meta name="apple-mobile-web-app-title" content="QR Scanner">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <style>
         body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
-    background-color: #f4f4f4;
-    margin: 0;
-    height: 100vh;
-    overflow: hidden; /* Переключити прокрутку, якщо потрібно */
-}
-.container {
-    background-color: #28a745; /* Зелений фон контейнера */
-    border-radius: 20px 20px 0 0; /* Заокруглені верхні кути */
-    padding: 20px;
-    width: calc(100% - 40px); /* Ширина контейнера з урахуванням відступів */
-    max-width: 600px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    z-index: 1000; /* Для того, щоб контейнер був зверху всіх елементів */
-}
-select, button {
-    font-size: 18px;
-    padding: 10px 20px;
-    margin: 10px 0; /* Відступи зліва та справа */
-    background-color: #fff; /* Білий фон для селектора і кнопок */
-    border: none;
-    border-radius: 8px; /* Заокруглення селектора і кнопок */
-    cursor: pointer;
-    width: calc(100% - 20px); /* Елементи майже в усю ширину */
-    color: #000; /* Чорний текст для кнопок і селектора */
-}
-#reader {
-    width: 100%;
-    max-width: 600px;
-    height: 400px;
-    margin: 20px auto;
-    display: none; /* Спочатку приховано */
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-}
-#result {
-    margin-top: 20px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #fff; /* Білий текст результату на зеленому фоні */
-}
-
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; /* Переключити прокрутку, якщо потрібно */
+        }
+        .container {
+            background-color: #28a745; /* Зелений фон контейнера */
+            border-radius: 20px 20px 0 0; /* Заокруглені верхні кути */
+            padding: 20px;
+            width: calc(100% - 40px); /* Ширина контейнера з урахуванням відступів */
+            max-width: 600px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            z-index: 1000; /* Для того, щоб контейнер був зверху всіх елементів */
+        }
+        select, button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px 0; /* Відступи зліва та справа */
+            background-color: #fff; /* Білий фон для селектора і кнопок */
+            border: none;
+            border-radius: 8px; /* Заокруглення селектора і кнопок */
+            cursor: pointer;
+            width: calc(100% - 20px); /* Елементи майже в усю ширину */
+            color: #000; /* Чорний текст для кнопок і селектора */
+        }
+        #reader {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            margin: 20px auto;
+            display: none; /* Спочатку приховано */
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff; /* Білий текст результату на зеленому фоні */
+        }
+        #toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0; /* Відступи зліва та справа */
+        }
+        .toggle-label {
+            font-size: 22px; /* Такий же розмір шрифту, як і для результатів */
+            font-weight: bold; /* Така ж вага шрифту, як і для результатів */
+            color: #fff; /* Білий текст для підпису тумблера */
+            margin-right: 20px; /* Збільшений відступ праворуч від тексту "Прийшли" */
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: #fff;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
     </style>
 </head>
 <body>
@@ -73,7 +116,13 @@ select, button {
             <option value="3">Локація 3</option>
             <option value="4">Локація 4</option>
         </select>
-        <br>
+        <div id="toggle-container">
+            <span class="toggle-label">Тогл</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
         <button id="scanButton">Сканувати</button>
         <button id="stopButton" style="display: none;">Зупини скан</button>
     </div>
@@ -101,6 +150,7 @@ select, button {
 
         function onScanSuccess(decodedText) {
             const location = document.getElementById('location').value;
+            const toggleState = document.getElementById('toggle').checked ? 1 : 0;
             console.log(`Скановано ${decodedText}`);
             
             document.getElementById('result').textContent = `Команда ${decodedText} відмічена!`;
@@ -110,12 +160,11 @@ select, button {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ team: decodedText, location: location }),
+                body: JSON.stringify({ team: decodedText, location: location, toggle: toggleState }),
             })
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Не потрібно оновлювати результат тут, це вже зроблено вище
             })
             .catch((error) => console.error('Error:', error));
 
@@ -132,8 +181,8 @@ select, button {
             html5QrCode.start(
                 { facingMode: "environment" }, // Камера заднього виду
                 {
-                    fps: 20, // Кількість кадрів за секунду
-                    qrbox: 550 // Розмір області для сканування QR-коду
+                    fps: 10, // Кількість кадрів за секунду
+                    qrbox: 250 // Розмір області для сканування QR-коду
                 },
                 onScanSuccess)
             .catch(err => {
